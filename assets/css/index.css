@@ -11,3 +11,14 @@ body {
     flex-wrap: wrap;
     justify-content: space-between;
 }
+
+#creationPanel {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+img{
+    width: 100%;
+    height: 100%;
+}

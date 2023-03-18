@@ -32,36 +32,53 @@
     </div>
     <div id="productsPanel" class="container">
         <div class="card" style="width: 18rem;">
-            <img src="..." class="card-img-top" alt="...">
+            <img src="assets/img/sample.jpg" class="card-img-top" alt="...">
             <div class="card-body">
-                <h5 class="card-title">Card title</h5>
+                <h5 class="card-title">Product Name</h5>
                 <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
                     card's content.</p>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
+                <a href="#" class="btn btn-primary">Buy</a>
             </div>
         </div>
     </div>
     <br>
-    <div id="creationPanel" class="container">
-        <h3>Create New Product</h3>
+    <div class="container" hidden="true">
         <div>
-            <form>
-                <div class="mb-3">
-                    <label for="inputPrdName" class="form-label">Name:</label>
-                    <input type="text" class="form-control" id="inputPrd" aria-describedby="prdName">
-                    <div id="prdName" class="form-text">Please enter new product's name.</div>
+            <h3>Create New Product</h3>
+        </div>
+        <div id="creationPanel">
+            <div id="newPrdForm" class="container">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1">Product Title</span>
+                    <input type="text" class="form-control" placeholder="Product Title" aria-label="Username" aria-describedby="basic-addon1">
+                  </div>
+                  
+                  <div class="input-group mb-3">
+                    <span class="input-group-text">Product price $</span>
+                    <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)">
+                    <span class="input-group-text">.00</span>
+                  </div>
+                  
+                  <div class="input-group">
+                    <span class="input-group-text">Product description</span>
+                    <textarea class="form-control" aria-label="With textarea"></textarea>
+                  </div>
+            </div>
+            <div id="newPrdPanelPreview">
+                <div>
+                    <h6>This is how your product will look:</h6>
                 </div>
-                <div class="mb-3">
-                    <label for="inputPrdPrice" class="form-label">Price:</label>
-                    <input type="number" class="form-control" id="inputPrdPrice" aria-describedby="prdPrice">
-                    <div id="prdPrice" class="form-text">Please set product's price.</div>
+                <div class="card" style="width: 18rem;">
+                    <img src="assets/img/sample.jpg" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 id="previewPrdName" class="card-title">Product Name</h5>
+                        <p id="previewDesc" class="card-text">Some quick example text to build on the card title and make up the bulk of
+                            the
+                            card's content.</p>
+                        <a href="#" class="btn btn-primary">Buy</a>
+                    </div>
                 </div>
-                <div class="mb-3 form-check">
-                    <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                    <label class="form-check-label" for="exampleCheck1">Visible after creation?</label>
-                </div>
-                <button type="submit" class="btn btn-primary">Create</button>
-            </form>
+            </div>
         </div>
     </div>
 </body>
