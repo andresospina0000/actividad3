@@ -12,11 +12,11 @@
 
 <header>
     <div>
-        <nav class="navbar nav-tabs fixed-top navbarfa-pull-right bg-light">
-            <a class="nav-link " href="#top">Home</a>
-            <a class="nav-link" href=" #academy">Check our products!</a>
-            <a class="nav-link " href="#work">Products Management</a>
-            <a class="nav-link" href="#personal">About us</a>
+        <nav class="navbar nav-tabs fixed-top navbarfa-pull-right bg-light" style="background-color: bg-primary">
+            <a class="nav-link" onclick="showProducts()">Home</a>
+            <a class="nav-link" onclick="showProducts()">Check our products!</a>
+            <a class="nav-link" onclick="showPrdCreationPanel()">Products Management</a>
+            <a class="nav-link" onclick="alert('About us!')">About us</a>
         </nav>
     </div>
     <div class="container">
@@ -26,7 +26,7 @@
 </header>
 <br>
 
-<body>
+<body class="">
     <div class="container">
         <h3>Our products</h3>
     </div>
@@ -42,27 +42,28 @@
         </div>
     </div>
     <br>
-    <div class="container" hidden="true">
+    <div id="creationPanel" class="container" hidden="true">
         <div>
             <h3>Create New Product</h3>
         </div>
-        <div id="creationPanel">
+        <div>
             <div id="newPrdForm" class="container">
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="basic-addon1">Product Title</span>
-                    <input type="text" class="form-control" placeholder="Product Title" aria-label="Username" aria-describedby="basic-addon1">
-                  </div>
-                  
-                  <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Product Title" aria-label="Username"
+                        aria-describedby="basic-addon1">
+                </div>
+
+                <div class="input-group mb-3">
                     <span class="input-group-text">Product price $</span>
                     <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)">
                     <span class="input-group-text">.00</span>
-                  </div>
-                  
-                  <div class="input-group">
+                </div>
+
+                <div class="input-group">
                     <span class="input-group-text">Product description</span>
                     <textarea class="form-control" aria-label="With textarea"></textarea>
-                  </div>
+                </div>
             </div>
             <div id="newPrdPanelPreview">
                 <div>
@@ -72,7 +73,8 @@
                     <img src="assets/img/sample.jpg" class="card-img-top" alt="...">
                     <div class="card-body">
                         <h5 id="previewPrdName" class="card-title">Product Name</h5>
-                        <p id="previewDesc" class="card-text">Some quick example text to build on the card title and make up the bulk of
+                        <p id="previewDesc" class="card-text">Some quick example text to build on the card title and
+                            make up the bulk of
                             the
                             card's content.</p>
                         <a href="#" class="btn btn-primary">Buy</a>
@@ -84,3 +86,15 @@
 </body>
 
 </html>
+
+<script>
+    function showPrdCreationPanel() {
+        document.getElementById('productsPanel').hidden = true;
+        document.getElementById('creationPanel').hidden = false;
+    }
+
+    function showProducts() {
+        document.getElementById('productsPanel').hidden = false;
+        document.getElementById('creationPanel').hidden = true;
+    }
+</script>
