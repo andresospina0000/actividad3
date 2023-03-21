@@ -19,7 +19,7 @@
             <a class="nav-link" id="nav-link" onclick="updateHomeProducts()">Home</a>
             <a class="nav-link" id="nav-link" onclick="showPrdCreationPanel()">Create new products!</a>
             <a class="nav-link" id="nav-link" onclick="showMngPanel()">Update your products!</a>
-            <a class="nav-link" id="nav-link" onclick="alert('About us!')">About us</a>
+            <a class="nav-link" id="nav-link" onclick="showAboutUsPanel()">About us</a>
         </nav>
     </div>
     <div class="container">
@@ -428,11 +428,9 @@
             return null;
         }
 
-        await getProductByIdAsync(id).then(product => {
-            if (product.error) {
-                alert(product.error);
-                return;
-            }
+        const product = await getProductByIdAsync(id);
+
+        if (product) {
             document.getElementById('existingPrdTitle').value = product.title;
             document.getElementById('existingPrdPrice').value = product.price;
             document.getElementById('existingPrdDesc').value = product.description;
@@ -440,7 +438,10 @@
             document.getElementById('modifyPrdBtn').hidden = false;
             document.getElementById('deletePrdBtn').hidden = false;
             document.getElementById('saveExistingPrdBtn').hidden = true;
-        });
+        } else {
+            alert('Product not found!');
+            resetExistingPrdForm();
+        }
     }
 
     function cancelModification() {
@@ -454,7 +455,7 @@
         document.getElementById('newPrdImage').value = '';
     }
 
-    function enableExistingPrdForm() {        
+    function enableExistingPrdForm() {
         document.getElementById('saveExistingPrdBtn').disabled = false;
         document.getElementById('existingProductfieldSet').disabled = false;
         document.getElementById('modifyPrdBtn').hidden = true;
@@ -497,6 +498,10 @@
         } else {
             alert('Error updating product!');
         }
+    }
+
+    function showAboutUsPanel() {
+        alert('By Stephano Palomino y Andres Ospina - Grupo 8 - Three Points - UPC 2023');
     }
     //DOM Manipulation
 
