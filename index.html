@@ -470,12 +470,29 @@
         const existingPrdDesc = document.getElementById('existingPrdDesc').value;
         const existingPrdImage = document.getElementById('existingPrdImage').value;
 
-        const product = {
+        /*const product = {
             id: existingPrdId,
             title: existingPrdTitle,
             price: existingPrdPrice,
             description: existingPrdDesc,
             image: existingPrdImage
+        }*/
+        const  product = {}
+
+        if(existingPrdId) {
+            product['id'] = existingPrdId;
+        }
+        if(existingPrdTitle) {
+            product['title'] = existingPrdTitle;
+        }
+        if(existingPrdPrice) {
+            product['price'] = existingPrdPrice;
+        }
+        if(existingPrdDesc) {
+            product['description'] = existingPrdDesc;
+        }
+        if(existingPrdImage) {
+            product['image'] = existingPrdImage;
         }
 
         const updated = updateProductAsync(product.id, product);
