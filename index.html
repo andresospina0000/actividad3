@@ -17,7 +17,7 @@
     <div>
         <nav class="navbar nav-tabs fixed-top navbarfa-pull-right bg-light" style="background-color: bg-primary">
             <a class="nav-link" onclick="updateHomeProducts()">Home</a>
-            <a class="nav-link" onclick="showPrdCreationPanel()">Create your products!</a>
+            <a class="nav-link" onclick="showPrdCreationPanel()">Create new products!</a>
             <a class="nav-link" onclick="">Update your products!</a>
             <a class="nav-link" onclick="alert('About us!')">About us</a>
         </nav>
@@ -31,7 +31,7 @@
 
 <body class="">
     <div class="container">
-        <div class="container">
+        <div id="productsTitle" class="container">
             <h3>Our products</h3>
         </div>
         <div id="productsPanel"></div>
@@ -100,6 +100,7 @@
 
     function showPrdCreationPanel() {
         document.getElementById('productsPanel').hidden = true;
+        document.getElementById('productsTitle').hidden = true;
         document.getElementById('creationPanel').hidden = false;
         document.getElementById('newPrdTitle').value = '';
         document.getElementById('newPrdPrice').value = '';
@@ -117,14 +118,17 @@
 
     function showProducts() {
         document.getElementById('productsPanel').hidden = false;
+        document.getElementById('productsTitle').hidden = false;
         document.getElementById('creationPanel').hidden = true;
     }
 
+    //API Integration
     async function getAllProducts() {
         const response = await fetch('http://localhost:4000/api/products');
         const data = await response.json();
         return data;
     }
+    //API Integration
 
     async function updateHomeProducts() {
 
@@ -154,7 +158,14 @@
         const newPrdTitle = document.getElementById('newPrdTitle').value;
         const newPrdPrice = document.getElementById('newPrdPrice').value;
         const newPrdDesc = document.getElementById('newPrdDesc').value;
-        const newPrdImage = document.getElementById('newPrdImage').value;
+        const imagePath = document.getElementById('newPrdImage').value + '';
+        const splittedPath = imagePath.split('\\');
+        const newPrdImage = splittedPath[splittedPath.length - 1];
+
+        if (!newPrdTitle || !newPrdDesc || !newPrdPrice || !newPrdImage) {
+            alert('You must complete all the form! :(')
+            return
+        }
 
         const newPrd = {
             title: newPrdTitle,
@@ -162,16 +173,18 @@
             description: newPrdDesc,
             image: newPrdImage
         }
-
+        
         return newPrd;
     }
 
     function previewProduct() {
         const newPrd = createProduct();
-        document.getElementById('newPrdPanelPreview').hidden = false;
-        document.getElementById('previewPrdName').innerHTML = newPrd.title;
-        document.getElementById('previewPrdPrice').innerHTML = `$${newPrd.price}`;
-        document.getElementById('previewDesc').innerHTML = newPrd.description;
+        if (newPrd) {
+            document.getElementById('newPrdPanelPreview').hidden = false;
+            document.getElementById('previewPrdName').innerHTML = newPrd.title;
+            document.getElementById('previewPrdPrice').innerHTML = `$${newPrd.price}`;
+            document.getElementById('previewDesc').innerHTML = newPrd.description;
+        }
     }
 
     function cleanPreviewPanel() {
