@@ -162,6 +162,9 @@
                                         <div class="col">
                                             <button onclick="deleteProduct()" class="btn btn-danger">Delete</button>
                                         </div>
+                                        <div class="col">
+                                            <button onclick="cancelModification()" class="btn btn-primary">Cancel</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -401,10 +404,13 @@
             document.getElementById('existingPrdImage').src = product.image;
         } else {
             alert('Product not found!');
-            resetExistingPrdForm();            
+            resetExistingPrdForm();
         }
     }
 
+    function cancelModification() {
+        resetExistingPrdForm();
+    }
     //DOM Manipulation
 
 </script>
