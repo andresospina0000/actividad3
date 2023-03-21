@@ -6,9 +6,9 @@ module.exports = (sequelize, DataTypes) => {
   class products extends Model {
   }
   products.init({
-    id: {
+    /*id: {
       get() { return this.getDataValue('id') },
-    },
+    }*/
     title: {
       type: DataTypes.STRING,
       allowNull: false

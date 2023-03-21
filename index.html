@@ -16,10 +16,10 @@
 <header>
     <div>
         <nav class="navbar nav-tabs fixed-top navbarfa-pull-right bg-light" style="background-color: bg-primary">
-            <a class="nav-link" onclick="updateHomeProducts()">Home</a>
-            <a class="nav-link" onclick="showPrdCreationPanel()">Create new products!</a>
-            <a class="nav-link" onclick="showMngPanel()">Update your products!</a>
-            <a class="nav-link" onclick="alert('About us!')">About us</a>
+            <a class="nav-link" id="nav-link" style="cursor: pointer;" onclick="updateHomeProducts()">Home</a>
+            <a class="nav-link" id="nav-link" style="cursor: pointer;" onclick="showPrdCreationPanel()">Create new products!</a>
+            <a class="nav-link" id="nav-link" style="cursor: pointer;" onclick="showMngPanel()">Update your products!</a>
+            <a class="nav-link" id="nav-link" style="cursor: pointer;" onclick="alert('About us!')">About us</a>
         </nav>
     </div>
     <div class="container">
@@ -285,7 +285,7 @@
 
         products.forEach(element => {
 
-            cards = `<div class="p-2 card" style="width: 18rem;">
+            cards = `<div class="p-2 card mb-3" style="width: 18rem;">
                         <img src="${element.image}" class="card-img-top">
                         <div class="card-body">
                             <h5 class="card-title">${element.title}</h5>
