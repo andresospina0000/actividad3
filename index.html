@@ -96,6 +96,7 @@
 </html>
 
 <script>
+
     updateHomeProducts()
 
     //API Integration
@@ -109,24 +110,26 @@
 
         const newProduct = getNewProduct();
 
-        const response = await fetch('http://localhost:4000/api/products', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(newProduct)
-        });
+        if (newProduct) {
 
-        const data = await response.json();
+            const response = await fetch('http://localhost:4000/api/products', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(newProduct)
+            });
 
-        if (data.error) {
-            alert(data.error);
-            return;
-        } else {
-            alert('Product created successfully!');
-            // console.log(data);
-            // cleanCreationPanel();
-            // updateHomeProducts();
+            const data = await response.json();
+
+            if (data.error) {
+                alert(data.error);
+                return;
+            } else {
+                new Promise((resolve, reject) => {
+                    setTimeout(() => resolve(alert('Product created successfully!')), 10000)
+                });
+            }
         }
     }
 
@@ -191,7 +194,7 @@
 
         if (!newPrdTitle || !newPrdDesc || !newPrdPrice || !newPrdImage) {
             alert('You must complete all the form! :(')
-            return
+            return null;
         }
 
         const newPrd = {
@@ -205,7 +208,7 @@
     }
 
     function previewProduct() {
-        const newPrd = createProduct();
+        const newPrd = getNewProduct();
         if (newPrd) {
             document.getElementById('newPrdPanelPreview').hidden = false;
             document.getElementById('previewPrdName').innerHTML = newPrd.title;
