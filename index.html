@@ -470,13 +470,6 @@
         const existingPrdDesc = document.getElementById('existingPrdDesc').value;
         const existingPrdImage = document.getElementById('existingPrdImage').value;
 
-        /*const product = {
-            id: existingPrdId,
-            title: existingPrdTitle,
-            price: existingPrdPrice,
-            description: existingPrdDesc,
-            image: existingPrdImage
-        }*/
         const  product = {}
 
         if(existingPrdId) {
@@ -500,6 +493,7 @@
         if (updated) {
             alert('Product updated successfully!');
             resetExistingPrdForm();
+            showMngPanel()
         } else {
             alert('Error updating product!');
         }
