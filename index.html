@@ -16,9 +16,9 @@
 <header>
     <div>
         <nav class="navbar nav-tabs fixed-top navbarfa-pull-right bg-light" style="background-color: bg-primary">
-            <a class="nav-link" onclick="showProducts()">Home</a>
-            <a class="nav-link" onclick="showProducts()">Check our products!</a>
-            <a class="nav-link" onclick="showPrdCreationPanel()">Products Management</a>
+            <a class="nav-link" onclick="updateHomeProducts()">Home</a>
+            <a class="nav-link" onclick="showPrdCreationPanel()">Create your products!</a>
+            <a class="nav-link" onclick="">Update your products!</a>
             <a class="nav-link" onclick="alert('About us!')">About us</a>
         </nav>
     </div>
@@ -30,19 +30,11 @@
 <br>
 
 <body class="">
-    <div id="productsPanel" class="container">
+    <div class="container">
         <div class="container">
             <h3>Our products</h3>
         </div>
-        <div class="card" style="width: 18rem;">
-            <img src="assets/img/sample.jpg" class="card-img-top" alt="...">
-            <div class="card-body">
-                <h5 class="card-title">Product Name</h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                    card's content.</p>
-                <a href="#" class="btn btn-primary">Buy</a>
-            </div>
-        </div>
+        <div id="productsPanel"></div>
     </div>
     <br>
     <div id="creationPanel" class="container" hidden="true">
@@ -53,25 +45,34 @@
             <div id="newPrdForm" class="container">
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="basic-addon1">Product Title</span>
-                    <input type="text" class="form-control" placeholder="Product Title" aria-label="Username"
-                        aria-describedby="basic-addon1">
+                    <input id="newPrdTitle" type="text" class="form-control" placeholder="Product Title"
+                        aria-label="Username" aria-describedby="basic-addon1">
                 </div>
                 <div class="input-group mb-3">
                     <span class="input-group-text">Product price $</span>
-                    <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)">
+                    <input id="newPrdPrice" type="text" class="form-control"
+                        aria-label="Amount (to the nearest dollar)">
                     <span class="input-group-text">.00</span>
                 </div>
                 <div class="input-group">
                     <span class="input-group-text">Product description</span>
-                    <textarea class="form-control" aria-label="With textarea"></textarea>
+                    <textarea id="newPrdDesc" class="form-control" aria-label="With textarea"></textarea>
                 </div>
                 <div class="mb-3">
                     <label for="formFile" class="form-label">Please choose an image for your product:</label>
-                    <input class="form-control" type="file" id="formFile">
-                  </div>
+                    <input id="newPrdImage" class="form-control" type="file" id="formFile">
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <button onclick="previewProduct()" class="btn btn-primary">Product preview...</button>
+                    </div>
+                    <div class="col">
+                        <button onclick="createProduct()" class="btn btn-primary">Create Product</button>
+                    </div>
+                </div>
             </div>
             <br>
-            <div id="newPrdPanelPreview">
+            <div id="newPrdPanelPreview" hidden="true">
                 <div>
                     <h6>This is how your product will look:</h6>
                 </div>
@@ -79,11 +80,12 @@
                     <img src="assets/img/sample.jpg" class="card-img-top" alt="...">
                     <div class="card-body">
                         <h5 id="previewPrdName" class="card-title">Product Name</h5>
-                        <p id="previewDesc" class="card-text">Some quick example text to build on the card title and
-                            make up the bulk of
-                            the
-                            card's content.</p>
-                        <a href="#" class="btn btn-primary">Buy</a>
+                        <h5 id="previewPrdPrice" class="card-title">Product Price</h6>
+                            <p id="previewDesc" class="card-text">Some quick example text to build on the card title and
+                                make up the bulk of
+                                the
+                                card's content.</p>
+                            <a href="#" class="btn btn-primary">Buy</a>
                     </div>
                 </div>
             </div>
@@ -94,13 +96,89 @@
 </html>
 
 <script>
+    updateHomeProducts()
+
     function showPrdCreationPanel() {
         document.getElementById('productsPanel').hidden = true;
         document.getElementById('creationPanel').hidden = false;
+        document.getElementById('newPrdTitle').value = '';
+        document.getElementById('newPrdPrice').value = '';
+        document.getElementById('newPrdDesc').value = '';
+        document.getElementById('newPrdImage').value = '';
+        cleanPreviewPanel();
+    }
+
+    function cleanCreationPanel() {
+        document.getElementById('newPrdTitle').value = '';
+        document.getElementById('newPrdPrice').value = '';
+        document.getElementById('newPrdDesc').value = '';
+        document.getElementById('newPrdImage').value = '';
     }
 
     function showProducts() {
         document.getElementById('productsPanel').hidden = false;
         document.getElementById('creationPanel').hidden = true;
     }
+
+    async function getAllProducts() {
+        const response = await fetch('http://localhost:4000/api/products');
+        const data = await response.json();
+        return data;
+    }
+
+    async function updateHomeProducts() {
+
+        showProducts();
+        let cards = '';
+        const productsPanel = document.getElementById('productsPanel');
+        productsPanel.innerHTML = '';
+
+        const products = await getAllProducts();
+
+        products.forEach(element => {
+
+            cards = `<div class="p-2 card" style="width: 18rem;">
+                        <img src="${element.image + '.jpg'}" class="card-img-top">
+                        <div class="card-body">
+                            <h5 class="card-title">${element.title}</h5>
+                            <h6>$${element.price}</h6>
+                            <p class="card-text">${element.description}</p>
+                            <a href="#" class="btn btn-primary">Add to cart</a>
+                        </div>
+                    </div>`;
+            productsPanel.insertAdjacentHTML("afterbegin", cards);
+        });
+    }
+
+    function createProduct() {
+        const newPrdTitle = document.getElementById('newPrdTitle').value;
+        const newPrdPrice = document.getElementById('newPrdPrice').value;
+        const newPrdDesc = document.getElementById('newPrdDesc').value;
+        const newPrdImage = document.getElementById('newPrdImage').value;
+
+        const newPrd = {
+            title: newPrdTitle,
+            price: newPrdPrice,
+            description: newPrdDesc,
+            image: newPrdImage
+        }
+
+        return newPrd;
+    }
+
+    function previewProduct() {
+        const newPrd = createProduct();
+        document.getElementById('newPrdPanelPreview').hidden = false;
+        document.getElementById('previewPrdName').innerHTML = newPrd.title;
+        document.getElementById('previewPrdPrice').innerHTML = `$${newPrd.price}`;
+        document.getElementById('previewDesc').innerHTML = newPrd.description;
+    }
+
+    function cleanPreviewPanel() {
+        document.getElementById('newPrdPanelPreview').hidden = true;
+        document.getElementById('previewPrdName').innerHTML = '';
+        document.getElementById('previewPrdPrice').innerHTML = '';
+        document.getElementById('previewDesc').innerHTML = '';
+    }
+
 </script>

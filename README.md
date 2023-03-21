@@ -1,7 +1,8 @@
 # actividad3
 SEMANA 3 - Actividad grupal by Andres Ospina &amp; Stephano Palomino 
  # Para correr la api
- Dirigirse a la carpeta api (cd assets/js/api) y correr el comando npm run dev
+ 1. Instalar todos los paquetes JS requeridos para ejecutarla. Para esto, ejecutar el comando "npm i" sobre el directorio "assets/js/api"
+ 2. Dirigirse a la carpeta api (cd assets/js/api) y correr el comando npm run dev
 
  # API
  1. Obtener todos los productos: GET http://localhost:4000/api/products
