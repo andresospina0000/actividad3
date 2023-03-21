@@ -8,6 +8,8 @@ module.exports = (sequelize, DataTypes) => {
   products.init({
     id: {
       get() { return this.getDataValue('id') },
+      type: DataTypes.INTEGER,
+      primaryKey: true,
     },
     title: {
       type: DataTypes.STRING,

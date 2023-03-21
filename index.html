@@ -18,7 +18,7 @@
         <nav class="navbar nav-tabs fixed-top navbarfa-pull-right bg-light" style="background-color: bg-primary">
             <a class="nav-link" onclick="updateHomeProducts()">Home</a>
             <a class="nav-link" onclick="showPrdCreationPanel()">Create new products!</a>
-            <a class="nav-link" onclick="showMngPanel()">Update your products!</a>
+            <a class="nav-link" onclick="showMngPanel()">Manage your products!</a>
             <a class="nav-link" onclick="alert('About us!')">About us</a>
         </nav>
     </div>
@@ -92,7 +92,7 @@
         </div>
     </div>
     <div id="productsManagmentPanel" class="container">
-        <div id="managmentPanel" class="col" hidden="true">
+        <div id="managmentPanel" class="col">
             <div>
                 <h4>Published products:</h4>
             </div>
@@ -126,7 +126,7 @@
                             <button onclick="loadExistingProduct()" class="btn btn-primary">Load Product</button>
                         </div>
                     </div>
-                    <div class="col-9">
+                    <div id="existingProductPanel" class="col-9" hidden>
                         <div class="row">
                             <div>
                                 <div id="existingPrdForm" class="container">
@@ -243,7 +243,7 @@
         document.getElementById('productsManagmentPanel').hidden = true;
         document.getElementById('productsPanel').hidden = true;
         document.getElementById('productsTitle').hidden = true;
-        document.getElementById('showProducstPanel').hidden = true;
+        document.getElementById('showProductsPanel').hidden = true;
         document.getElementById('newPrdTitle').value = '';
         document.getElementById('newPrdPrice').value = '';
         document.getElementById('newPrdDesc').value = '';
@@ -272,6 +272,7 @@
         document.getElementById('existingPrdPrice').value = '';
         document.getElementById('existingPrdDesc').value = '';
         document.getElementById('existingPrdImage').value = '';
+        document.getElementById('existingProductPanel').hidden = true;
     }
 
     async function updateHomeProducts() {
@@ -338,19 +339,22 @@
         document.getElementById('previewDesc').innerHTML = '';
     }
 
-    async function showMngPanel() {
+    function showMngPanel() {
         document.getElementById('productsManagmentPanel').hidden = false;
         document.getElementById('productsPanel').hidden = true;
         document.getElementById('productsTitle').hidden = true;
         document.getElementById('creationPanel').hidden = true;
         document.getElementById('newPrdPanelPreview').hidden = true;
+        document.getElementById('showProductsPanel').hidden = true;
+        document.getElementById('existingProductPanel').hidden = true;
         document.getElementById('previewPrdName').innerHTML = '';
         document.getElementById('previewPrdPrice').innerHTML = '';
         document.getElementById('previewDesc').innerHTML = '';
-        await loadPublishedProducts();
+        document.getElementById('existingPrdId').value = '';
+        loadPublishedProducts();
     }
 
-    async function loadPublishedProducts() {
+    function loadPublishedProducts() {
         const productsMngTable = document.getElementById('productsMngTable');
         productsMngTable.innerHTML = '';
         getAllProductsAsync().then(products => {
@@ -372,28 +376,33 @@
             const existingPrdId = document.getElementById('existingPrdId');
             const id = existingPrdId.value;
             const deleted = await deleteProductByIdAsync(id);
+            resetExistingPrdForm();
         }
     }
 
     async function loadExistingProduct() {
+
+        existingProductPanel.hidden = false;
         const existingPrdId = document.getElementById('existingPrdId');
         const id = existingPrdId.value;
 
         if (!id) {
-            alert('Please type a product id!')
+            alert('Please type a product id!');
+            resetExistingPrdForm();
             return null;
         }
 
-        await getProductByIdAsync(id).then(product => {
-            if (product.error) {
-                alert(product.error);
-                return;
-            }
+        const product = await getProductByIdAsync(id);
+
+        if (product) {
             document.getElementById('existingPrdTitle').value = product.title;
             document.getElementById('existingPrdPrice').value = product.price;
             document.getElementById('existingPrdDesc').value = product.description;
-            document.getElementById('existingPrdImage').value = product.image;
-        });
+            document.getElementById('existingPrdImage').src = product.image;
+        } else {
+            alert('Product not found!');
+            resetExistingPrdForm();            
+        }
     }
 
     //DOM Manipulation
