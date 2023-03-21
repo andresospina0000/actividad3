@@ -18,7 +18,7 @@
         <nav class="navbar nav-tabs fixed-top navbarfa-pull-right bg-light" style="background-color: bg-primary">
             <a class="nav-link" onclick="updateHomeProducts()">Home</a>
             <a class="nav-link" onclick="showPrdCreationPanel()">Create new products!</a>
-            <a class="nav-link" onclick="">Update your products!</a>
+            <a class="nav-link" onclick="showMngPanel()">Update your products!</a>
             <a class="nav-link" onclick="alert('About us!')">About us</a>
         </nav>
     </div>
@@ -30,7 +30,7 @@
 <br>
 
 <body class="">
-    <div class="container">
+    <div id="showProductsPanel" class="container">
         <div id="productsTitle" class="container">
             <h3>Our products</h3>
         </div>
@@ -67,7 +67,7 @@
                         <button onclick="previewProduct()" class="btn btn-primary">Product preview...</button>
                     </div>
                     <div class="col">
-                        <button onclick="createProduct()" class="btn btn-primary">Create Product</button>
+                        <button onclick="createProductAsync()" class="btn btn-primary">Create Product</button>
                     </div>
                 </div>
             </div>
@@ -91,8 +91,85 @@
             </div>
         </div>
     </div>
-    <div id="managmentPanel" class="container">
+    <div id="productsManagmentPanel" class="container">
+        <div id="managmentPanel" class="col" hidden="true">
+            <div>
+                <h4>Published products:</h4>
+            </div>
+            <table class="table table-striped table-hover table-bordered border-info">
+                <thead>
+                    <tr>
+                        <th scope="col">Product Id</th>
+                        <th scope="col">Title</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Image path</th>
+                    </tr>
+                </thead>
+                <tbody id="productsMngTable">
 
+                </tbody>
+            </table>
+        </div>
+        <div class="row">
+            <div class="row">
+                <h5>Please type the product's id that you want to remove/modify:</h5>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-3">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">Product Id:</span>
+                            <input id="existingPrdId" type="text" class="form-control" placeholder="Product id"
+                                aria-label="Username" aria-describedby="basic-addon1">
+                        </div>
+                        <div>
+                            <button onclick="loadExistingProduct()" class="btn btn-primary">Load Product</button>
+                        </div>
+                    </div>
+                    <div class="col-9">
+                        <div class="row">
+                            <div>
+                                <div id="existingPrdForm" class="container">
+                                    <fieldset disabled>
+                                        <div class="input-group mb-3">
+                                            <span class="input-group-text" id="basic-addon1">Product Title</span>
+                                            <input id="existingPrdTitle" type="text" class="form-control"
+                                                placeholder="Product Title" aria-label="Username"
+                                                aria-describedby="basic-addon1">
+                                        </div>
+                                        <div class="input-group mb-3">
+                                            <span class="input-group-text">Product price $</span>
+                                            <input id="existingPrdPrice" type="text" class="form-control"
+                                                aria-label="Amount (to the nearest dollar)">
+                                            <span class="input-group-text">.00</span>
+                                        </div>
+                                        <div class="input-group">
+                                            <span class="input-group-text">Product description</span>
+                                            <textarea id="existingPrdDesc" class="form-control"
+                                                aria-label="With textarea"></textarea>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="formFile" class="form-label">Please choose an image for your
+                                                product:</label>
+                                            <input id="existingPrdImage" class="form-control" type="file" id="formFile">
+                                        </div>
+                                    </fieldset>
+                                    <div class="row">
+                                        <div class="col-2">
+                                            <button onclick="createProductAsync()"
+                                                class="btn btn-primary">Modify</button>
+                                        </div>
+                                        <div class="col">
+                                            <button onclick="deleteProduct()" class="btn btn-danger">Delete</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 
@@ -103,13 +180,13 @@
     updateHomeProducts()
 
     //API Integration
-    async function getAllProducts() {
+    async function getAllProductsAsync() {
         const response = await fetch('http://localhost:4000/api/products');
         const data = await response.json();
         return data;
     }
 
-    async function createProduct() {
+    async function createProductAsync() {
 
         const newProduct = getNewProduct();
 
@@ -136,13 +213,37 @@
         }
     }
 
+    async function getProductByIdAsync(id) {
+        const response = await fetch(`http://localhost:4000/api/products/${id}`);
+        const data = await response.json();
+        return data;
+    }
+
+    async function deleteProductByIdAsync(id) {
+        const response = await fetch(`http://localhost:4000/api/products/${id}`, {
+            method: 'DELETE'
+        });
+        const data = await response.json();
+        if (data.error) {
+            alert(data.error);
+            return false;
+        } else {
+            new Promise((resolve, reject) => {
+                setTimeout(() => resolve(alert('Product deleted successfully!')), 10000)
+            });
+            return true;
+        }
+    }
+
     //API Integration
 
     //DOM Manipulation
     function showPrdCreationPanel() {
+        document.getElementById('creationPanel').hidden = false;
+        document.getElementById('productsManagmentPanel').hidden = true;
         document.getElementById('productsPanel').hidden = true;
         document.getElementById('productsTitle').hidden = true;
-        document.getElementById('creationPanel').hidden = false;
+        document.getElementById('showProducstPanel').hidden = true;
         document.getElementById('newPrdTitle').value = '';
         document.getElementById('newPrdPrice').value = '';
         document.getElementById('newPrdDesc').value = '';
@@ -158,9 +259,19 @@
     }
 
     function showProducts() {
+        document.getElementById('showProductsPanel').hidden = false;
         document.getElementById('productsPanel').hidden = false;
         document.getElementById('productsTitle').hidden = false;
         document.getElementById('creationPanel').hidden = true;
+        document.getElementById('productsManagmentPanel').hidden = true;
+    }
+
+    function resetExistingPrdForm() {
+        document.getElementById('existingPrdId').value = '';
+        document.getElementById('existingPrdTitle').value = '';
+        document.getElementById('existingPrdPrice').value = '';
+        document.getElementById('existingPrdDesc').value = '';
+        document.getElementById('existingPrdImage').value = '';
     }
 
     async function updateHomeProducts() {
@@ -170,7 +281,7 @@
         const productsPanel = document.getElementById('productsPanel');
         productsPanel.innerHTML = '';
 
-        const products = await getAllProducts();
+        const products = await getAllProductsAsync();
 
         products.forEach(element => {
 
@@ -226,6 +337,65 @@
         document.getElementById('previewPrdPrice').innerHTML = '';
         document.getElementById('previewDesc').innerHTML = '';
     }
+
+    async function showMngPanel() {
+        document.getElementById('productsManagmentPanel').hidden = false;
+        document.getElementById('productsPanel').hidden = true;
+        document.getElementById('productsTitle').hidden = true;
+        document.getElementById('creationPanel').hidden = true;
+        document.getElementById('newPrdPanelPreview').hidden = true;
+        document.getElementById('previewPrdName').innerHTML = '';
+        document.getElementById('previewPrdPrice').innerHTML = '';
+        document.getElementById('previewDesc').innerHTML = '';
+        await loadPublishedProducts();
+    }
+
+    async function loadPublishedProducts() {
+        const productsMngTable = document.getElementById('productsMngTable');
+        productsMngTable.innerHTML = '';
+        getAllProductsAsync().then(products => {
+            products.forEach(element => {
+                const row = `<tr>
+                                <th scope="row">${element.id}</th>
+                                <td>${element.title}</td>
+                                <td>${element.price}</td>
+                                <td>${element.image}</td>
+                            </tr>`;
+                productsMngTable.insertAdjacentHTML("afterbegin", row);
+            });
+        });
+    }
+
+    async function deleteProduct() {
+
+        if (confirm('Are you sure you want to delete this product?')) {
+            const existingPrdId = document.getElementById('existingPrdId');
+            const id = existingPrdId.value;
+            const deleted = await deleteProductByIdAsync(id);
+        }
+    }
+
+    async function loadExistingProduct() {
+        const existingPrdId = document.getElementById('existingPrdId');
+        const id = existingPrdId.value;
+
+        if (!id) {
+            alert('Please type a product id!')
+            return null;
+        }
+
+        await getProductByIdAsync(id).then(product => {
+            if (product.error) {
+                alert(product.error);
+                return;
+            }
+            document.getElementById('existingPrdTitle').value = product.title;
+            document.getElementById('existingPrdPrice').value = product.price;
+            document.getElementById('existingPrdDesc').value = product.description;
+            document.getElementById('existingPrdImage').value = product.image;
+        });
+    }
+
     //DOM Manipulation
 
 </script>

@@ -6,7 +6,10 @@ module.exports = (sequelize, DataTypes) => {
   class products extends Model {
   }
   products.init({
-    title:{
+    id: {
+      get() { return this.getDataValue('id') },
+    },
+    title: {
       type: DataTypes.STRING,
       allowNull: false
     },
@@ -19,8 +22,8 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
     image: {
-        type: DataTypes.STRING,
-        allowNull: false
+      type: DataTypes.STRING,
+      allowNull: false
     }
   }, {
     sequelize,
