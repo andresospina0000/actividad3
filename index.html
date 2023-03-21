@@ -92,7 +92,7 @@
         </div>
     </div>
     <div id="productsManagmentPanel" class="container">
-        <div id="managmentPanel" class="col" hidden="true">
+        <div id="managmentPanel" class="col">
             <div>
                 <h4>Published products:</h4>
             </div>
@@ -130,7 +130,7 @@
                         <div class="row">
                             <div>
                                 <div id="existingPrdForm" class="container">
-                                    <fieldset disabled>
+                                    <fieldset id="existingProductfieldSet" disabled>
                                         <div class="input-group mb-3">
                                             <span class="input-group-text" id="basic-addon1">Product Title</span>
                                             <input id="existingPrdTitle" type="text" class="form-control"
@@ -155,15 +155,21 @@
                                         </div>
                                     </fieldset>
                                     <div class="row">
-                                        <div class="col-2">
-                                            <button onclick="createProductAsync()"
+                                        <div class="col-1">
+                                            <button id="cancelModifyPrdBtn" onclick="cancelModification()"
+                                                class="btn btn-primary">Cancel</button>
+                                        </div>
+                                        <div class="col-1">
+                                            <button id="modifyPrdBtn" onclick="enableExistingPrdForm()"
                                                 class="btn btn-primary">Modify</button>
                                         </div>
-                                        <div class="col">
-                                            <button onclick="deleteProduct()" class="btn btn-danger">Delete</button>
+                                        <div class="col-1">
+                                            <button id="deletePrdBtn" onclick="deleteProduct()"
+                                                class="btn btn-danger">Delete</button>
                                         </div>
-                                        <div class="col">
-                                            <button onclick="cancelModification()" class="btn btn-primary">Cancel</button>
+                                        <div class="col-1">
+                                            <button id="saveExistingPrdBtn" onclick="updateProduct()"
+                                                class="btn btn-primary" hidden>Save...</button>
                                         </div>
                                     </div>
                                 </div>
@@ -212,6 +218,7 @@
                 new Promise((resolve, reject) => {
                     setTimeout(() => resolve(alert('Product created successfully!')), 10000)
                 });
+                resetCreationPanel();
             }
         }
     }
@@ -235,6 +242,31 @@
                 setTimeout(() => resolve(alert('Product deleted successfully!')), 10000)
             });
             return true;
+        }
+    }
+
+
+    async function updateProductAsync(id, product) {
+
+        if (product) {
+
+            const response = await fetch(`http://localhost:4000/api/products/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(product)
+            });
+
+            const data = await response.json();
+            console.log('updateProductAsync')
+            console.log(data);
+            if (data.error) {
+                alert(data.error);
+                return false;
+            } else {
+                return true;
+            }
         }
     }
 
@@ -275,7 +307,9 @@
         document.getElementById('existingPrdPrice').value = '';
         document.getElementById('existingPrdDesc').value = '';
         document.getElementById('existingPrdImage').value = '';
-        document.getElementById('existingProductPanel').hidden = true;
+        document.getElementById('existingPrdForm').hidden = true;
+        document.getElementById('existingProductfieldSet').disabled = true;
+        document.getElementById('saveExistingPrdBtn').hidden = true;
     }
 
     async function updateHomeProducts() {
@@ -343,13 +377,14 @@
     }
 
     function showMngPanel() {
+        document.getElementById('existingPrdId').value = '';
         document.getElementById('productsManagmentPanel').hidden = false;
         document.getElementById('productsPanel').hidden = true;
         document.getElementById('productsTitle').hidden = true;
         document.getElementById('creationPanel').hidden = true;
         document.getElementById('newPrdPanelPreview').hidden = true;
         document.getElementById('showProductsPanel').hidden = true;
-        document.getElementById('existingProductPanel').hidden = true;
+        document.getElementById('existingPrdForm').hidden = true;
         document.getElementById('previewPrdName').innerHTML = '';
         document.getElementById('previewPrdPrice').innerHTML = '';
         document.getElementById('previewDesc').innerHTML = '';
@@ -384,7 +419,7 @@
 
     async function loadExistingProduct() {
 
-        existingProductPanel.hidden = false;
+        document.getElementById('existingPrdForm').hidden = false;
         const existingPrdId = document.getElementById('existingPrdId');
         const id = existingPrdId.value;
 
@@ -402,11 +437,55 @@
             document.getElementById('existingPrdPrice').value = product.price;
             document.getElementById('existingPrdDesc').value = product.description;
             document.getElementById('existingPrdImage').value = product.image;
+            document.getElementById('modifyPrdBtn').hidden = false;
+            document.getElementById('deletePrdBtn').hidden = false;
+            document.getElementById('saveExistingPrdBtn').hidden = true;
         });
     }
 
     function cancelModification() {
         resetExistingPrdForm();
+    }
+
+    function resetCreationPanel() {
+        document.getElementById('newPrdTitle').value = '';
+        document.getElementById('newPrdPrice').value = '';
+        document.getElementById('newPrdDesc').value = '';
+        document.getElementById('newPrdImage').value = '';
+    }
+
+    function enableExistingPrdForm() {        
+        document.getElementById('saveExistingPrdBtn').disabled = false;
+        document.getElementById('existingProductfieldSet').disabled = false;
+        document.getElementById('modifyPrdBtn').hidden = true;
+        document.getElementById('deletePrdBtn').hidden = true;
+        document.getElementById('saveExistingPrdBtn').hidden = false;
+    }
+
+    function updateProduct() {
+
+        const existingPrdId = document.getElementById('existingPrdId').value;
+        const existingPrdTitle = document.getElementById('existingPrdTitle').value;
+        const existingPrdPrice = document.getElementById('existingPrdPrice').value;
+        const existingPrdDesc = document.getElementById('existingPrdDesc').value;
+        const existingPrdImage = document.getElementById('existingPrdImage').value;
+
+        const product = {
+            id: existingPrdId,
+            title: existingPrdTitle,
+            price: existingPrdPrice,
+            description: existingPrdDesc,
+            image: existingPrdImage
+        }
+
+        const updated = updateProductAsync(product.id, product);
+
+        if (updated) {
+            alert('Product updated successfully!');
+            resetExistingPrdForm();
+        } else {
+            alert('Error updating product!');
+        }
     }
     //DOM Manipulation
 

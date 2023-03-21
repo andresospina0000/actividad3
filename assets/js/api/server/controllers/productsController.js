@@ -57,7 +57,7 @@ const updateProduct = async (req, res) => {
   let productToUpdate = null;
   try {
     productToUpdate = await products.findByPk(productId)
-    productToUpdate = await productId.update({
+    productToUpdate = await products.update({
       title: title,
       price: price,
       description: description,
