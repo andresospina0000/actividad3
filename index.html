@@ -16,10 +16,10 @@
 <header>
     <div>
         <nav class="navbar nav-tabs fixed-top navbarfa-pull-right bg-light" style="background-color: bg-primary">
-            <a class="nav-link" id="nav-link" style="cursor: pointer;" onclick="updateHomeProducts()">Home</a>
-            <a class="nav-link" id="nav-link" style="cursor: pointer;" onclick="showPrdCreationPanel()">Create new products!</a>
-            <a class="nav-link" id="nav-link" style="cursor: pointer;" onclick="showMngPanel()">Manage your products!</a>
-            <a class="nav-link" id="nav-link" style="cursor: pointer;" onclick="alert('About us!')">About us</a>
+            <a class="nav-link" onclick="updateHomeProducts()">Home</a>
+            <a class="nav-link" onclick="showPrdCreationPanel()">Create new products!</a>
+            <a class="nav-link" onclick="showMngPanel()">Update your products!</a>
+            <a class="nav-link" onclick="alert('About us!')">About us</a>
         </nav>
     </div>
     <div class="container">
@@ -92,7 +92,7 @@
         </div>
     </div>
     <div id="productsManagmentPanel" class="container">
-        <div id="managmentPanel" class="col" >
+        <div id="managmentPanel" class="col" hidden="true">
             <div>
                 <h4>Published products:</h4>
             </div>
@@ -126,7 +126,7 @@
                             <button onclick="loadExistingProduct()" class="btn btn-primary">Load Product</button>
                         </div>
                     </div>
-                    <div id="existingProductPanel" class="col-9"  hidden>
+                    <div class="col-9">
                         <div class="row">
                             <div>
                                 <div id="existingPrdForm" class="container">
@@ -390,27 +390,24 @@
 
         if (!id) {
             alert('Please type a product id!')
-            resetExistingPrdForm();
             return null;
         }
 
-        const product = await getProductByIdAsync(id);
-
-        if (product) {
-        document.getElementById('existingPrdTitle').value = product.title;
-        document.getElementById('existingPrdPrice').value = product.price;
-        document.getElementById('existingPrdDesc').value = product.description;
-        document.getElementById('existingPrdImage').src = product.image;
-        } else {
-            alert('Product not found!');
-            resetExistingPrdForm();            
-        }
+        await getProductByIdAsync(id).then(product => {
+            if (product.error) {
+                alert(product.error);
+                return;
+            }
+            document.getElementById('existingPrdTitle').value = product.title;
+            document.getElementById('existingPrdPrice').value = product.price;
+            document.getElementById('existingPrdDesc').value = product.description;
+            document.getElementById('existingPrdImage').value = product.image;
+        });
     }
 
     function cancelModification() {
         resetExistingPrdForm();
     }
-
     //DOM Manipulation
 
 </script>
