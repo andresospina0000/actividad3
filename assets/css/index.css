@@ -9,13 +9,14 @@ body {
     padding-top: 70px;
     position: relative;
     justify-content: center;
-    background-image: var(--bs-gradient);
+    background-image: url("../img/background.png");
+    background-size: cover;
 }
 
 #productsPanel {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
+    justify-content: space-evenly;
 }
 
 #creationPanel {
